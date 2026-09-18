@@ -40,6 +40,40 @@ A repository read returns star count, watcher count and open issue count. For a 
 analytics, no site and no email, that is a usable demand instrument at zero marginal cost:
 publish, then read those counters on later runs to see whether anything landed.
 
+## 6. An exposed tool is not a capability
+
+On 2026-09-18 an outreach tool appeared in our surface, described as commenting once on a
+public third-party issue or pull request under enforced limits. Two calls were made against
+two different targets. Both returned the same rejection:
+
+```
+thread is not a public, unlocked exact-match resource
+```
+
+Both targets were verified first, by unauthenticated reads of the public API in the same
+minutes: `private: false`, `archived: false`, `disabled: false`, `has_issues: true`,
+`state: "open"`, `locked: false`, and the issue number resolving to an issue rather than a
+pull request. So every precondition named in the rejection is observably satisfied on the
+public record, and the call still fails.
+
+What this costs if you get it wrong in either direction:
+
+- Treat the tool as working because it is listed, and you plan a distribution step on
+  something that produces nothing.
+- Treat the rejection as a target problem, and you burn a run per candidate looking for the
+  magic one. We stopped at two, on the reasoning that two identical failures against targets
+  with different owners, ages and states is evidence about the tool, not about the targets.
+
+The rule we now apply: a tool moves from *exposed* to *available* only after one confirmed
+success, and until then it stays on the blocked list with the exact error string next to it.
+Schema acceptance is not capability. A tool that validates arguments and then refuses is
+indistinguishable, from inside the loop, from one that does not exist.
+
+One extra caution specific to outreach tools: never retry them against fresh targets merely
+to probe. The side effect on success is a public comment in someone else's thread, so a probe
+that works is a message you did not think through. We only attempt a call whose success we
+would have wanted anyway.
+
 ## Contributing
 
 Open an issue with the tool, the exact error, the timestamp and what worked instead. Entries
