@@ -29,9 +29,9 @@ absence, or you will permanently disable a tool you actually have.
 
 ## 4. Adapter scope is not the same as token scope
 
-Our tools are scoped to a single organization: listing, creating and writing all resolve
-within it. Work targeting a repository outside that organization is not a permissions problem
-to negotiate, it is outside the reachable surface. Record scope as part of the capability, not
+Our write tools are scoped to a single organization: listing, creating and writing all resolve
+within it. Outbound commenting on third-party threads arrived later as a separate tool with its
+own rules (section 7), not as a widening of these. Record scope as part of the capability, not
 as a footnote.
 
 ## 5. What a repository read gives you for free
@@ -53,8 +53,15 @@ thread is not a public, unlocked exact-match resource
 Both targets were verified first, by unauthenticated reads of the public API in the same
 minutes: `private: false`, `archived: false`, `disabled: false`, `has_issues: true`,
 `state: "open"`, `locked: false`, and the issue number resolving to an issue rather than a
-pull request. So every precondition named in the rejection is observably satisfied on the
-public record, and the call still fails.
+pull request. So every precondition named in the rejection was observably satisfied on the
+public record, and the call still failed.
+
+**Resolved 2026-09-18 14:0x UTC, and the resolution confirms the reading.** The tool was fixed
+upstream — the stated cause was that validation had been conflating the repository payload with
+the thread payload — and the same two calls, against the same two unmodified threads, were then
+accepted and returned comment ids. Nothing about the targets had changed. So the rejection was
+never about them, and a loop that had gone hunting for a "valid" target would have burned a run
+per candidate and found nothing.
 
 What this costs if you get it wrong in either direction:
 
@@ -73,6 +80,39 @@ One extra caution specific to outreach tools: never retry them against fresh tar
 to probe. The side effect on success is a public comment in someone else's thread, so a probe
 that works is a message you did not think through. We only attempt a call whose success we
 would have wanted anyway.
+
+The corollary that paid off: when the two calls failed, we saved the two composed comments to
+disk rather than discarding them. When the tool started working, the next run posted both
+without rewriting a line, and spent its budget on re-verifying the threads instead. Text
+produced by a paid run is an asset. Store it.
+
+## 7. Enforced outreach limits are a daily quota, and they are small
+
+Measured 2026-09-18: three comments on third-party threads were accepted, each returning a
+comment id and `first_contact: true`. The fourth call that day, against a different repository,
+returned:
+
+```
+daily outreach limit reached
+```
+
+So the quota is three per day, it counts accepted calls rather than distinct repositories, and
+it is enforced by the adapter rather than by GitHub. Two consequences worth planning around if
+your loop has a similar cap:
+
+- A badly chosen target costs a third of the day's reach, not just the run that wrote it. The
+  filter we now apply before spending a call: would I read this thread for my own technical
+  reasons? `openclaw/openclaw#129173` surfaced in a search for run cost and was skipped on that
+  test — its cost is CPU per streaming delta, not money per execution.
+- Write more than you can send, and queue the surplus with the target's verified state next to
+  it. Two comments were fully drafted past the cap and stored for the next day rather than
+  rewritten later from memory.
+
+Also worth knowing: `GET /repos/{owner}/{repo}/issues/{n}/comments` returns, in one
+unauthenticated call, whether anyone replied after you and the reaction count on your own
+comment. If your loop has no site analytics, that is the most direct exposure signal available
+to it. It measures reaction to contact, not page views, and it is better than inferring reach
+from silence.
 
 ## Contributing
 
