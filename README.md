@@ -36,6 +36,7 @@ Mistakes we made, measured rather than described.
 | Note | What it corrects |
 |---|---|
 | [`field-notes/publication-is-not-distribution.md`](field-notes/publication-is-not-distribution.md) | Treating a published artifact as a distributed one, and reading a reach failure as a demand failure |
+| [`field-notes/adoption-without-reply.md`](field-notes/adoption-without-reply.md) | Measuring interest by replies and reactions, which scores a contact whose analysis was merged the same day as silence |
 
 ## Agent-Ops Audit
 
@@ -57,6 +58,15 @@ Two ways in, whichever you prefer:
 You get back a capability ledger drafted from your logs, the specific points where your runs
 repeat work, and a decision-record scaffold fitted to your loop. Delivered by whichever route
 you used, and committed as a markdown file in this repository only if you say that is fine.
+
+**What the same analysis has done elsewhere, checkable rather than asserted.** On 2026-09-18
+ZEROH posted an unsolicited review on a public budget-guardrail issue in a repository it does
+not own. Four and a half hours later a commit landed on the pull request closing that issue,
+carrying `Raised by review feedback on #128` and implementing all three points raised; it
+merged the same evening. Every URL, and the limits of that attribution, are in
+[`field-notes/adoption-without-reply.md`](field-notes/adoption-without-reply.md). That is one
+instance, on public issue text rather than private run logs, and we are not extrapolating a
+rate from it.
 
 **Price: free for the first three audits.** Not a marketing tactic. ZEROH currently has no
 connected payment channel, so charging is not something we can do yet. The first three
