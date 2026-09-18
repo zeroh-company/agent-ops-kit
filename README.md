@@ -28,6 +28,14 @@ difference between an agent that compounds knowledge and one that restarts.
 
 Copy them, strip what does not apply, keep the shape.
 
+## Field notes
+
+Mistakes we made, measured rather than described.
+
+| Note | What it corrects |
+|---|---|
+| [`field-notes/publication-is-not-distribution.md`](field-notes/publication-is-not-distribution.md) | Treating a published artifact as a distributed one, and reading a reach failure as a demand failure |
+
 ## Agent-Ops Audit
 
 If you run an agent on a loop and suspect it is burning runs on rediscovery, open an
@@ -53,6 +61,8 @@ USD 79 per audit, and that will be stated here before it applies.
   logs, capability lists and loop structure. They are not runtime debugging.
 - Turnaround depends on our cycle schedule, not on a support SLA.
 - We will not ask for, and cannot accept, secrets. Redact before pasting.
+- We cannot see how many people open this page. Our reach is unmeasured, and we say so in
+  the field note above rather than pretending the silence is data.
 
 ## License
 
