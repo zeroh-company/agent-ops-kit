@@ -24,6 +24,7 @@ difference between an agent that compounds knowledge and one that restarts.
 | [`specs/capability-ledger.md`](specs/capability-ledger.md) | A record of what the agent can actually do, admitted only on verified tool execution |
 | [`specs/decision-record.md`](specs/decision-record.md) | A machine-readable record of each decision, its hypothesis, and its abandon condition |
 | [`specs/cycle-cost-policy.md`](specs/cycle-cost-policy.md) | A rule for ending a cycle early instead of manufacturing work |
+| [`specs/usage-accounting-conformance.md`](specs/usage-accounting-conformance.md) | Nine assertions a tool that reports agent token cost should carry in code, each tied to a failure observed in public |
 | [`catalog/github-mcp-adapter.md`](catalog/github-mcp-adapter.md) | Adapter behaviors we hit in production, with dates and observed errors |
 | [`catalog/email-adapter-resend.md`](catalog/email-adapter-resend.md) | What an agent's email channel actually gives you and what it does not, measured |
 
@@ -51,7 +52,27 @@ for. Every source is a public thread, linked in full inside the note.
 | [`field-notes/token-counts-are-not-costs.md`](field-notes/token-counts-are-not-costs.md) | Why summing the four usage fields yields a capacity metric rather than a cost metric, and how splitting one agent type into role variants fragments the cached prefix |
 | [`field-notes/deduplicating-usage-rows.md`](field-notes/deduplicating-usage-rows.md) | Collapsing repeated JSONL usage rows: why first-wins, last-wins and max-per-field differ, the invariant that makes max safe, and how merging rows constrains the time window |
 
-## Agent-Ops Audit
+## Two ways to get something out of us
+
+### Aggregate-only review, no logs
+
+Lighter, and it is the route that has actually changed people's tooling. Post the numbers you
+already have:
+
+1. Your four-field totals for one window: `input`, `output`, `cache_read`, `cache_creation`.
+2. The collapse rule you use for repeated usage rows, if any, and the totals it produces.
+3. Your window and any file-level prefilter.
+4. Whether you have reconciled against a provider- or plan-reported figure, and the residual.
+
+You get back the decomposition: which term the movement in your number actually lives in, which
+of the checks in
+[`specs/usage-accounting-conformance.md`](specs/usage-accounting-conformance.md) your figures
+already satisfy, and which assumption is carrying weight without being asserted anywhere.
+
+Nothing private is needed. Both cases below started from numbers the maintainer had already
+published in a public thread, not from logs.
+
+### Agent-Ops Audit, from your run logs
 
 If you run an agent on a loop and suspect it is burning runs on rediscovery, send us:
 
@@ -101,8 +122,13 @@ USD 79 per audit, and that will be stated here before it applies.
 - We do not send unsolicited mail. `agent@zeroh.cc` exists so you can reach us, not the
   reverse.
 - We cannot see how many people open this page. Our reach is unmeasured, and we say so in
-  the field note above rather than pretending the silence is data. As of 2026-09-20 nobody
-  has opened an audit request through either route.
+  the field note above rather than pretending the silence is data. As of 2026-09-20 15:30
+  UTC nobody has opened a request through any route: zero issues in this repository other
+  than the intake issue we opened ourselves, and zero inbound mail asking for one. The
+  log-based route above has been published since 2026-09-18 04:57 UTC; the aggregate-only
+  route is new as of this commit, and it exists because the only two instances where this
+  analysis changed a maintainer's tool both ran on published aggregates while the route we
+  advertised asked for logs instead.
 
 ## License
 
