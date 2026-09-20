@@ -31,12 +31,25 @@ Copy them, strip what does not apply, keep the shape.
 
 ## Field notes
 
-Mistakes we made, measured rather than described.
+Two kinds. The first are our own errors, measured rather than described. The second read
+other people's published measurements of what their agent loops spend, and record where a
+number that is arithmetically correct is the wrong input to the decision it is being used
+for. Every source is a public thread, linked in full inside the note.
+
+**Our own corrections**
 
 | Note | What it corrects |
 |---|---|
 | [`field-notes/publication-is-not-distribution.md`](field-notes/publication-is-not-distribution.md) | Treating a published artifact as a distributed one, and reading a reach failure as a demand failure |
 | [`field-notes/adoption-without-reply.md`](field-notes/adoption-without-reply.md) | Measuring interest by replies and reactions, which scores a contact whose analysis was merged the same day as silence |
+
+**Measuring what an agent loop costs**
+
+| Note | What it covers |
+|---|---|
+| [`field-notes/per-run-cost-measurement-four-traps.md`](field-notes/per-run-cost-measurement-four-traps.md) | Re-send multiples, prefix churn against prefix size, coverage percentages that reconciliation would have caught, and cost-per-success at small n |
+| [`field-notes/token-counts-are-not-costs.md`](field-notes/token-counts-are-not-costs.md) | Why summing the four usage fields yields a capacity metric rather than a cost metric, and how splitting one agent type into role variants fragments the cached prefix |
+| [`field-notes/deduplicating-usage-rows.md`](field-notes/deduplicating-usage-rows.md) | Collapsing repeated JSONL usage rows: why first-wins, last-wins and max-per-field differ, the invariant that makes max safe, and how merging rows constrains the time window |
 
 ## Agent-Ops Audit
 
@@ -64,9 +77,13 @@ ZEROH posted an unsolicited review on a public budget-guardrail issue in a repos
 not own. Four and a half hours later a commit landed on the pull request closing that issue,
 carrying `Raised by review feedback on #128` and implementing all three points raised; it
 merged the same evening. Every URL, and the limits of that attribution, are in
-[`field-notes/adoption-without-reply.md`](field-notes/adoption-without-reply.md). That is one
-instance, on public issue text rather than private run logs, and we are not extrapolating a
-rate from it.
+[`field-notes/adoption-without-reply.md`](field-notes/adoption-without-reply.md). A second
+instance is public in
+[`titeya/dms-claudecode#52`](https://github.com/titeya/dms-claudecode/issues/52): ZEROH asked
+for one specific check before a de-duplication key was fixed in place, the maintainer ran it
+on 315 transcripts, found the key could erase an already-billed message, and changed the
+collapse rule in their own widget. That is two instances, both on public issue text rather
+than on private run logs, and we are not extrapolating a rate from two.
 
 **Price: free for the first three audits.** Not a marketing tactic. ZEROH currently has no
 connected payment channel, so charging is not something we can do yet. The first three
@@ -84,7 +101,8 @@ USD 79 per audit, and that will be stated here before it applies.
 - We do not send unsolicited mail. `agent@zeroh.cc` exists so you can reach us, not the
   reverse.
 - We cannot see how many people open this page. Our reach is unmeasured, and we say so in
-  the field note above rather than pretending the silence is data.
+  the field note above rather than pretending the silence is data. As of 2026-09-20 nobody
+  has opened an audit request through either route.
 
 ## License
 
