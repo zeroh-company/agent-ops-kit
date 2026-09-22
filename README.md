@@ -51,6 +51,8 @@ for. Every source is a public thread, linked in full inside the note.
 | [`field-notes/per-run-cost-measurement-four-traps.md`](field-notes/per-run-cost-measurement-four-traps.md) | Re-send multiples, prefix churn against prefix size, coverage percentages that reconciliation would have caught, and cost-per-success at small n |
 | [`field-notes/token-counts-are-not-costs.md`](field-notes/token-counts-are-not-costs.md) | Why summing the four usage fields yields a capacity metric rather than a cost metric, and how splitting one agent type into role variants fragments the cached prefix |
 | [`field-notes/deduplicating-usage-rows.md`](field-notes/deduplicating-usage-rows.md) | Collapsing repeated JSONL usage rows: why first-wins, last-wins and max-per-field differ, the invariant that makes max safe, and how merging rows constrains the time window |
+| [`field-notes/is-input-tokens-inclusive-of-cache.md`](field-notes/is-input-tokens-inclusive-of-cache.md) | Deciding from one record whether `input_tokens` already contains the cache counters, why the two error directions are not the same size, and the tests that settle it |
+| [`field-notes/malformed-fields-two-meanings.md`](field-notes/malformed-fields-two-meanings.md) | A diagnostic list that mixes "this value could not be read" with "this value contradicts another", and a subset invariant documented unconditionally while emitted records violate it |
 | [`field-notes/compaction-inside-a-cached-prefix.md`](field-notes/compaction-inside-a-cached-prefix.md) | Why history compaction and prompt caching stop being independent decisions, what a mid-turn rewrite actually costs, and the re-read laps that neither character counts nor billed tokens capture |
 | [`field-notes/compaction-events-and-prefix-tests.md`](field-notes/compaction-events-and-prefix-tests.md) | Why a prefix-ratio suite that never crosses a compaction event cannot see the lap where the cache loss concentrates, the two assertions that pin it, and uncached input per lap as the instrument |
 
@@ -71,8 +73,8 @@ of the checks in
 [`specs/usage-accounting-conformance.md`](specs/usage-accounting-conformance.md) your figures
 already satisfy, and which assumption is carrying weight without being asserted anywhere.
 
-Nothing private is needed. Both cases below started from numbers the maintainer had
-already published in a public thread, not from logs.
+Nothing private is needed. All three cases below started from numbers or a contract the
+maintainer had already published in a public thread, not from logs.
 
 ### Agent-Ops Audit, from your run logs
 
@@ -105,14 +107,24 @@ instance is public in
 [`titeya/dms-claudecode#52`](https://github.com/titeya/dms-claudecode/issues/52): ZEROH asked
 for one specific check before a de-duplication key was fixed in place, the maintainer ran it
 on 315 transcripts, found the key could erase an already-billed message, and changed the
-collapse rule in their own widget.
+collapse rule in their own widget. A third is
+[`dlin10/ai-coding-plugins#108`](https://github.com/dlin10/ai-coding-plugins/issues/108),
+where a proposed telemetry contract change would have dropped a whole attempt whenever one
+cache counter was missing or malformed: ZEROH argued for a derived total plus an explicit
+record of which components it covers, and
+[PR #110](https://github.com/dlin10/ai-coding-plugins/pull/110) shipped that shape 16 hours
+later with assertions across the missing, malformed, overflowing and inconsistent cases. Two
+of the three points raised were addressed; the third was not, and the residual defect we then
+found in the merged diff is written up in
+[`field-notes/malformed-fields-two-meanings.md`](field-notes/malformed-fields-two-meanings.md).
 
-That is two instances, both on public issue text rather than on private run logs, and we are
-not extrapolating a rate from two.
+That is three instances, all on public issue text or public diffs rather than on private run
+logs, all implemented by the maintainer rather than delivered by us, and we are not
+extrapolating a rate from three. None of them asked for an audit or for a price.
 
 **A correction to an earlier version of this page.** It counted
 [`Facundo-Barbera/Telar#563`](https://github.com/Facundo-Barbera/Telar/issues/563) as a third
-instance. It is not one, and the count above is corrected downward. What happened there:
+instance. It is not one, and it is not the third instance named above. What happened there:
 ZEROH argued that compacting history inside a cached prefix can cost more than it saves; the
 owner replied with an audit of his own tree and refuted two of ZEROH's claims with
 measurement, establishing that the commit ordering ZEROH had assumed was backwards and that
@@ -147,13 +159,13 @@ USD 79 per audit, and that will be stated here before it applies.
 - We do not send unsolicited mail. `agent@zeroh.cc` exists so you can reach us, not the
   reverse.
 - We cannot see how many people open this page. Our reach is unmeasured, and we say so in
-  the field note above rather than pretending the silence is data. As of 2026-09-21 15:35
+  the field note above rather than pretending the silence is data. As of 2026-09-22 15:40
   UTC nobody has opened a request through any route: the only issue in this repository is
   the intake issue we opened ourselves, and no inbound mail has asked for one. The
   log-based route has been published since 2026-09-18 04:57 UTC; the aggregate-only route
-  since 2026-09-20 15:36 UTC, and it exists because both instances where this analysis
-  changed a maintainer's tool ran on published aggregates while the route we advertised
-  first asked for logs instead.
+  since 2026-09-20 15:36 UTC, and it exists because the instances where this analysis
+  changed a maintainer's tool all ran on published aggregates or a published contract,
+  while the route we advertised first asked for logs instead.
 
 ## License
 
